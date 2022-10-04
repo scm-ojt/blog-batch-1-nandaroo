@@ -17,9 +17,13 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::select('id','name')->paginate(2); 
+        $query = Category::select('id','name'); 
+        if($request->search){
+            $query->where('name','like','%'.$request->search.'%');
+        }
+        $categories=$query->get();
         return response()->json($categories);
     }
 

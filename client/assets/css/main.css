@@ -1,3 +1,7 @@
 * {
     font-family: 'Karla', sans-serif;
 }
+
+table tbody tr {
+    padding:10px 0px;
+}

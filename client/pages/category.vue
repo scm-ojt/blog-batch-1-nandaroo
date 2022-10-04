@@ -6,8 +6,8 @@
       </div>
       <div class="col-5 d-flex justify-content-end">
         <div class="input-group input-group-sm mb-3 w-50">
-          <input type="text" class="form-control" v-model="keyword" />
-          <button class="input-group-text btn btn-primary btn-sm" @click="search()">
+          <input type="text" class="form-control" v-model="keyword" placeholder="Search"/>
+          <button class="input-group-text bg-primary text-white" @click="search()">
             Search
           </button>
         </div>
@@ -21,11 +21,11 @@
           </div>
           <div class="card-body">
             <form @submit.prevent="isEditMode ? editCategory() : createNew()">
-              <div class="form-group my-2">
+              <div class="form-group mb-3">
                 <label for="name">Name</label>
                 <input
                   type="text"
-                  class="form-control mt-2"
+                  class="form-control"
                   id="name"
                   placeholder="Enter Category Name!"
                   v-model="category.name"
@@ -38,29 +38,36 @@
         </div>
       </div>
       <div class="col-8">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col" class="w-75">Name</th>
-              <th scope="col">Acions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in categories" :key="item.id">
-              <td scope="row">{{ item.id }}</td>
-              <td>{{ item.name }}</td>
-              <td>
-                <button class="btn btn-sm btn-success" @click="editForm(item)">
-                  Edit
-                </button>
-                <button class="btn btn-sm btn-danger" @click="destory(item.id)">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <b-table
+          striped
+          id="my-table"
+          :items="categories"
+          :per-page="perPage"
+          :current-page="currentPage"
+          :fields="fields"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
+          class="mb-5"
+        >
+          <template #cell(actions)="data">
+            <button class="btn btn-sm btn-success" @click="editForm(data.item)">
+              Edit
+            </button>
+            <button class="btn btn-sm btn-danger" @click="destory(data.item)">
+              Delete
+            </button>
+          </template>
+        </b-table>
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="rows()"
+          :per-page="perPage"
+          :current-page="currentPage"
+          first-text="First"
+          prev-text="Prev"
+          next-text="Next"
+          last-text="Last"
+        ></b-pagination>
       </div>
     </div>
   </div>
@@ -73,11 +80,21 @@ export default {
   },
   data() {
     return {
+      sortBy: "id",
+      sortDesc: true,
+      fields: [
+        { key: "id", label: "#" },
+        { key: "name", label: "Name", thStyle: { width: "70%" } },
+        ,
+        "Actions",
+      ],
+      currentPage: 1,
+      perPage: 5,
       category: {
         id: null,
         name: "",
       },
-      categories: {},
+      categories: [],
       nameErr: "",
       isEditMode: false,
       keyword: "",
@@ -88,12 +105,14 @@ export default {
     this.getAllCategories();
   },
   methods: {
-    async getAllCategories(page= 1) {
+    rows() {
+      return this.categories.length;
+    },
+    async getAllCategories() {
       await this.$axios
-        .$get("categories?page=" + page)
+        .$get("http://127.0.0.1:8000/api/categories?search=" + this.keyword)
         .then((res) => {
-          this.categories = res.data;
-          console.log(this.categories);
+          this.categories = res;
         })
         .catch((err) => {
           console.error(err);
@@ -105,6 +124,7 @@ export default {
         .then((res) => {
           this.categories.push(res.data);
           this.category.name = "";
+          this.nameErr = "";
         })
         .catch((err) => {
           this.nameErr = err.response.data.errors.name[0];
@@ -121,32 +141,33 @@ export default {
     },
     editCategory() {
       this.$axios
-        .$put(`categories/${this.category.id}`, { name: this.category.name })
+        .$put(`categories/${this.category.id}`, this.category)
         .then((res) => {
           this.isEditMode = false;
           this.getAllCategories();
           this.category = {};
+          this.nameErr = "";
         })
         .catch((err) => {
           this.nameErr = err.response.data.errors.name[0];
         });
     },
-    destory(id) {
-      this.$axios
-        .$delete(`categories/${id}`)
-        .then((res) => {
-          this.categories = this.categories.filter((item) => {
-            return item.id !== id;
+    destory(item) {
+      if (confirm("Are you sure to delete ")) {
+        this.$axios
+          .$delete(`categories/${item.id}`)
+          .then((res) => {
+            this.categories = this.categories.filter((category) => {
+              return category.id !== item.id;
+            });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      }
     },
     search() {
-      this.categories = this.categories.filter((item) => {
-        return item.name.includes(this.search);
-      });
+      this.getAllCategories();
     },
   },
 };
