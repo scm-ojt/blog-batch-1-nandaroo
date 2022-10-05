@@ -17,7 +17,7 @@
       <div class="col-4 px-3">
         <div class="card">
           <div class="card-header">
-            <h5>{{ !isEditMode ? "Create" : "Edit" }}</h5>
+            <h5 class="fw-bolder">{{ !isEditMode ? "Create" : "Edit" }}</h5>
           </div>
           <div class="card-body">
             <form @submit.prevent="isEditMode ? editCategory() : createNew()">
@@ -153,7 +153,7 @@ export default {
         });
     },
     destory(item) {
-      if (confirm("Are you sure to delete ")) {
+      if (confirm("Are you sure to delete?")) {
         this.$axios
           .$delete(`categories/${item.id}`)
           .then((res) => {

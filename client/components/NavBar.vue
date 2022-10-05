@@ -1,7 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container justify-between">
-      <NuxtLink class="nav-link" to="/">
+      <NuxtLink class="nav-link text-white" to="/">
         <h2>Nuxt Auth</h2>
       </NuxtLink>
       <div class="" id="navbarNav">
@@ -15,8 +15,25 @@
           <li class="nav-item" v-if="$auth.loggedIn">
             <NuxtLink class="nav-link" to="/category">Category</NuxtLink>
           </li>
-          <li class="nav-item" v-if="$auth.loggedIn">
-            <span @click="logout" class="btn">Logout</span>
+          <li class="nav-item dropdown" v-if="$auth.loggedIn">
+            <a
+              class="nav-link dropdown-toggle text-uppercase"
+              href="#"
+              id="dropdown07XL"
+              data-bs-toggle="dropdown"
+              aria-expanded="true"
+              >{{ $auth.user.name }}</a
+            >
+            <ul
+              class="dropdown-menu"
+              aria-labelledby="dropdown07XL"
+              data-bs-popper="none"
+            >
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li>
+                <span @click="logout" class="dropdown-item">Logout</span>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>

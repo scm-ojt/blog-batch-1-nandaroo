@@ -1,7 +1,9 @@
 <template>
-  <form class="col-3 m-auto text-center" @submit.prevent="login()">
-    <img class="mb-4" src="/favicon.ico" alt="" width="72" height="57" />
-    <h1 class="h3 mb-3 fw-normal">Please Login In</h1>
+  <form class="col-3 m-auto" @submit.prevent="login()">
+    <div class="text-center">
+      <img class="mb-3" src="/favicon.ico" alt="" width="80" height="70" />
+    </div>
+    <h1 class="h3 mb-3 fw-normal text-center">Please Login In</h1>
 
     <div class="form-floating my-2">
       <input
@@ -12,6 +14,7 @@
         v-model="user.email"
       />
       <label for="floatingInput">Email address</label>
+      <small class="text-danger" v-if="errors.email != null">* {{ errors.email[0] }}</small>
     </div>
     <div class="form-floating my-2">
       <input
@@ -22,6 +25,7 @@
         v-model="user.password"
       />
       <label for="floatingPassword">Password</label>
+      <small class="text-danger" v-if="errors.password != null">* {{ errors.password[0] }}</small>
     </div>
     <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
   </form>
@@ -30,12 +34,16 @@
 <script>
 export default {
   auth: "guest",
+  head: {
+    title: "Login"
+  },
   data() {
     return {
       user: {
         email: null,
         password: null,
       },
+      errors: {},
     };
   },
   mounted() {
@@ -50,7 +58,7 @@ export default {
           path: "/category",
         });
       } catch (err) {
-        console.log(err.response);
+        this.errors = err.response.data.errors;
       }
       this.$nuxt.$loading.finish();
     },

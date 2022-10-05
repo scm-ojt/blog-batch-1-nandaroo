@@ -1,7 +1,9 @@
 <template>
-  <form class="col-3 m-auto text-center" @submit.prevent="register()">
-    <img class="mb-4" src="/favicon.ico" alt="" width="72" height="57" />
-    <h1 class="h3 mb-3 fw-normal">Please Sign Up</h1>
+  <form class="col-3 m-auto" @submit.prevent="register()">
+    <div class="text-center">
+    <img class="mb-3" src="/favicon.ico" alt="" width="80" height="70" />
+    </div>
+    <h1 class="h3 mb-3 fw-normal text-center">Please Sign Up</h1>
     <div class="form-floating mt-2">
       <input
         type="text"
@@ -11,6 +13,7 @@
         v-model="user.name"
       />
       <label for="floatingName">User Name</label>
+      <small class="text-danger" v-if="errors.name != null">* {{ errors.name[0] }}</small>
     </div>
     <div class="form-floating my-2">
       <input
@@ -21,7 +24,9 @@
         v-model="user.email"
       />
       <label for="floatingInput">Email address</label>
+      <small class="text-danger" v-if="errors.email != null">* {{ errors.email[0] }}</small>
     </div>
+    
     <div class="form-floating my-2">
       <input
         type="password"
@@ -31,6 +36,7 @@
         v-model="user.password"
       />
       <label for="floatingPassword">Password</label>
+      <small class="text-danger" v-if="errors.password != null">* {{ errors.password[0] }}</small>
     </div>
     <div class="form-floating my-2">
       <input
@@ -49,6 +55,9 @@
 <script>
 export default {
   auth: "guest",
+  head: {
+    title: "Register"
+  },
   data() {
     return {
       user: {
@@ -56,8 +65,8 @@ export default {
         email: null,
         password: null,
         password_confirmation: null,
-        _token:''
       },
+      errors: {},
     };
   },
   mounted() {
@@ -65,16 +74,16 @@ export default {
   },
   methods: {
     register() {
-      try {
-        this.$axios.post("http://127.0.0.1:8000/register", this.user).then((res) => {
-          this.$auth.loginWith("laravelSanctum", { data: this.user });
+      this.$axios
+        .post("http://127.0.0.1:8000/register", this.user)
+        .then((res) => {
           this.$router.push({
-            path: "/category",
+            path: "/login",
           });
+        })
+        .catch((err) => {
+          this.errors = err.response.data.errors;
         });
-      } catch (err) {
-        console.log(err.response);
-      }
     },
   },
 };
