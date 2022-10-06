@@ -15,6 +15,9 @@
           <li class="nav-item" v-if="$auth.loggedIn">
             <NuxtLink class="nav-link" to="/category">Category</NuxtLink>
           </li>
+          <li class="nav-item" v-if="$auth.loggedIn">
+            <NuxtLink class="nav-link" to="/posts">Post</NuxtLink>
+          </li>
           <li class="nav-item dropdown" v-if="$auth.loggedIn">
             <a
               class="nav-link dropdown-toggle text-uppercase"

@@ -2,13 +2,13 @@
   <div class="container my-5">
     <div class="row d-flex justify-content-end">
       <div class="col-3">
-        <button class="btn btn-sm btn-primary" @click="createForm()">Create</button>
+        <button class="btn btn-sm btn-primary" @click="createForm()"><i class="fa-sharp fa-solid fa-plus"></i> Create</button>
       </div>
       <div class="col-5 d-flex justify-content-end">
         <div class="input-group input-group-sm mb-3 w-50">
           <input type="text" class="form-control" v-model="keyword" placeholder="Search"/>
           <button class="input-group-text bg-primary text-white" @click="search()">
-            Search
+            <i class="fa-sharp fa-solid fa-magnifying-glass"></i> Search
           </button>
         </div>
       </div>
@@ -32,7 +32,7 @@
                 />
                 <small class="text-danger" v-if="nameErr != ''">*{{ nameErr }}</small>
               </div>
-              <button class="btn btn-sm btn-primary" type="submit">Save</button>
+              <button class="btn btn-sm btn-primary" type="submit"><i class="fa-regular fa-floppy-disk"></i> Save</button>
             </form>
           </div>
         </div>
@@ -51,16 +51,16 @@
         >
           <template #cell(actions)="data">
             <button class="btn btn-sm btn-success" @click="editForm(data.item)">
-              Edit
+              <i class="fa-regular fa-pen-to-square"></i> Edit
             </button>
             <button class="btn btn-sm btn-danger" @click="destory(data.item)">
-              Delete
+              <i class="fa-solid fa-trash-can"></i> Delete
             </button>
           </template>
         </b-table>
         <b-pagination
           v-model="currentPage"
-          :total-rows="rows()"
+          :total-rows="rows"
           :per-page="perPage"
           :current-page="currentPage"
           first-text="First"
@@ -104,10 +104,12 @@ export default {
     this.nameErr = "";
     this.getAllCategories();
   },
-  methods: {
+  computed: {
     rows() {
       return this.categories.length;
     },
+  },
+  methods: {
     async getAllCategories() {
       await this.$axios
         .$get("http://127.0.0.1:8000/api/categories?search=" + this.keyword)

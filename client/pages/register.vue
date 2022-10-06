@@ -75,7 +75,7 @@ export default {
   methods: {
     register() {
       this.$axios
-        .post("http://127.0.0.1:8000/register", this.user)
+        .post("http://127.0.0.1:8000/api/register", this.user)
         .then((res) => {
           this.$router.push({
             path: "/login",
