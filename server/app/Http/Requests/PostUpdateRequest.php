@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostRequest extends FormRequest
+class PostUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,22 +25,10 @@ class PostRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => ['required', File::image()->max(2048)],
+            'image' => [ 'nullable', File::image()->max(2048)],
             'title' => ['required', 'max:255'],
             'body' => ['required'],
             'categories' => ['required', 'array'],
-        ];
-    }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'image.image' => 'The file type must only be jpg or jpeg or png!',
         ];
     }
 }

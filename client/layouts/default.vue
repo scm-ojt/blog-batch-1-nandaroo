@@ -1,7 +1,7 @@
 <template>
-    <div class="w-100 min-vh-100 bg-light">
+    <div class="w-100 bg-light">
       <Navbar/>
-      <main class="p-5"><Nuxt /></main>
+      <main class="p-5 min-vh-100"><Nuxt /></main>
     </div>
   </template>
   

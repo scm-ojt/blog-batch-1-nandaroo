@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
+use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\PostUpdateRequest;
 
 class PostController extends Controller
 {
@@ -18,10 +20,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
-        return response([
-            'data' => $posts
-        ]);
+        $posts = Post::with('user')->with('categories')->get();
+        return response()->json($posts);
     }
 
     /**
@@ -32,19 +32,21 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        info('request____');
+        info($request);
         $imageName = time() . '.' . $request->image->extension();
 
-        // Public Folder
-        $request->image->move(public_path('img/posts'), $imageName);
+        // Storage Folder
+        $request->image->move(storage_path('app/public/img/posts'), $imageName);
         $post = Post::create([
             'user_id' => Auth::user()->id,
             'image' => $imageName,
             'title' => $request->title,
             'body' => $request->body
         ]);
-
+        $post->categories()->sync($request->categories);
         return response([
-            'message' => 'Post created',
+            'message' => 'success',
             'data' => $post
         ]);
     }
@@ -57,7 +59,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        return response()->json(new PostResource($post));
     }
 
     /**
@@ -78,22 +81,24 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PostUpdateRequest $request, $id)
     {
         $post = Post::find($id);
-
-        if ($request->image) {
-            if (File::exists('img/posts/' . $post->image)) {
-                File::delete('img/posts/' . $post->image);
+        if ($request->file('image')) {
+            if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
+                //File::delete('storage/img/posts/' . $post->image);
+                File::delete(storage_path('app/public/img/posts/') . $post->image);
             }
-            $imageName = time() . '.' . $request->image->extension();
-            // Public Folder
-            $request->image->move(public_path('img/posts'), $imageName);
+            $imageName = time() . '.' . $request->file('image')->extension();
+
+        // Storage Folder
+        $request->image->move(storage_path('app/public/img/posts'), $imageName);
             $post->image = $imageName;
         }
 
         $post->title = $request->title;
         $post->body = $request->body;
+        $post->categories()->sync($request->categories);
         $post->save();
 
         return response([
@@ -112,9 +117,13 @@ class PostController extends Controller
     {
         $post = Post::find($id);
 
-        if (File::exists('img/posts/' . $post->image)) {
-            File::delete('img/posts/' . $post->image);
+        if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
+            //File::delete('storage/img/posts/' . $post->image);
+            File::delete(storage_path('app/public/img/posts/') . $post->image);
         }
+        
+        
+        $post->categories()->sync([]);
         $post->delete();
         return response([
             'message' => 'Post deleted!'

@@ -4,10 +4,14 @@
       <img class="mb-3" src="/favicon.ico" alt="" width="80" height="70" />
     </div>
     <h1 class="h3 mb-3 fw-normal text-center">Please Login In</h1>
-    <div class="alert alert-warning text-center alert-dismissible fade show" role="alert" v-if="message != null">
-      <small class="text-danger alert" >{{ message }}!</small>
+    <div
+      class="alert alert-warning text-center alert-dismissible fade show"
+      role="alert"
+      v-if="message != null"
+    >
+      <small class="text-danger alert">{{ message }}!</small>
     </div>
-    
+
     <div class="form-floating my-2">
       <input
         type="email"
@@ -59,17 +63,15 @@ export default {
   },
   methods: {
     async login() {
-      this.message= null;
-      this.errors={};
+      this.message = null;
+      this.errors = {};
       this.$nuxt.$loading.start();
       try {
         await this.$auth.loginWith("local", { data: this.user });
         await this.$router.push({
-          path: "/category",
+          path: "/posts",
         });
       } catch (err) {
-        console.log(err.response.status);
-
         if (err.response.status === 401) {
           this.message = await err.response.data.message;
         } else {

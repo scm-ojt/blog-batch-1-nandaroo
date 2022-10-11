@@ -27,6 +27,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('posts/edit/{id}',[PostController::class,'update']);
     Route::resource('categories', CategoryController::class);
     Route::resource('posts', PostController::class);
 });

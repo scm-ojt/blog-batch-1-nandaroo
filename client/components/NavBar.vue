@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container justify-between">
       <NuxtLink class="nav-link text-white" to="/">
-        <h2>Nuxt Auth</h2>
+        <h2 class="text-uppercase">Nuxt Auth</h2>
       </NuxtLink>
       <div class="" id="navbarNav">
         <ul class="navbar-nav">

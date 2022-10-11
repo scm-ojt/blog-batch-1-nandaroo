@@ -22,7 +22,7 @@
           <div class="card-body">
             <form @submit.prevent="isEditMode ? editCategory() : createNew()">
               <div class="form-group mb-3">
-                <label for="name">Name</label>
+                <label for="name" class="fw-semibold">Name</label>
                 <input
                   type="text"
                   class="form-control"
