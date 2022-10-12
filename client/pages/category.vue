@@ -58,6 +58,7 @@
             </button>
           </template>
         </b-table>
+        <p v-if="rows == 0" class="text-danger text-center">No category here!</p>
         <b-pagination
           v-model="currentPage"
           :total-rows="rows"
@@ -67,6 +68,7 @@
           prev-text="Prev"
           next-text="Next"
           last-text="Last"
+          v-if="rows > 5"
         ></b-pagination>
       </div>
     </div>
@@ -115,6 +117,7 @@ export default {
         .$get("http://127.0.0.1:8000/api/categories?search=" + this.keyword)
         .then((res) => {
           this.categories = res;
+          this.keyword = '';
         })
         .catch((err) => {
           console.error(err);

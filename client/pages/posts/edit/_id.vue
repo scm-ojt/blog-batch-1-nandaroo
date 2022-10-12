@@ -100,6 +100,9 @@
 
 <script>
 export default {
+  head: {
+    title: 'Post'
+  },
   data() {
     return {
       url: null,
@@ -147,16 +150,24 @@ export default {
       }
     },
     async editPost() {
-        let form = new FormData(document.getElementById("form"));
+      let form = new FormData(document.getElementById("form"));
       await this.$axios
-        .$post(`http://127.0.0.1:8000/api/posts/edit/${this.post.id}`,form)
+        .$post(`http://127.0.0.1:8000/api/posts/edit/${this.post.id}`, form)
         .then((res) => {
           this.$router.push({
-            path: '/posts'
-          })
+            path: "/posts",
+          });
         })
         .catch((err) => {
-          this.errors = err.response.data.errors;
+          
+          if (err.response.status == 403) {
+            this.$router.push({
+              path: "/posts",
+            });
+            alert("You are not authorized!");
+          } else {
+            this.errors = err.response.data.errors;
+          }
         });
     },
   },

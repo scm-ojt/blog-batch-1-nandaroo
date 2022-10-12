@@ -8,7 +8,6 @@ use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PostUpdateRequest;
 
 class PostController extends Controller
@@ -18,9 +17,13 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with('user')->with('categories')->get();
+        $query = Post::with('user')->with('categories');
+        if ($request->search) {
+            $query->where('posts.title', 'like', '%' . request()->input('search') . '%');
+        }
+        $posts = $query->get();
         return response()->json($posts);
     }
 
@@ -32,8 +35,6 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        info('request____');
-        info($request);
         $imageName = time() . '.' . $request->image->extension();
 
         // Storage Folder
@@ -64,17 +65,6 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -84,6 +74,14 @@ class PostController extends Controller
     public function update(PostUpdateRequest $request, $id)
     {
         $post = Post::find($id);
+
+        //authorize user to update the post
+        /* if (! Gate::allows('post-actions', $post)) {
+            abort(403);
+        } */
+        if ($request->user()->cannot('update', $post)) {
+            abort(403);
+        }
         if ($request->file('image')) {
             if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
                 //File::delete('storage/img/posts/' . $post->image);
@@ -91,8 +89,8 @@ class PostController extends Controller
             }
             $imageName = time() . '.' . $request->file('image')->extension();
 
-        // Storage Folder
-        $request->image->move(storage_path('app/public/img/posts'), $imageName);
+            // Storage Folder
+            $request->image->move(storage_path('app/public/img/posts'), $imageName);
             $post->image = $imageName;
         }
 
@@ -113,16 +111,22 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $post = Post::find($id);
+        /* if (! Gate::allows('post-actions', $post)) {
+            abort(403);
+        } */
 
+        //authorize user to delete the post
+        if ($request->user()->cannot('delete', $post)) {
+            abort(403);
+        }
         if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
-            //File::delete('storage/img/posts/' . $post->image);
             File::delete(storage_path('app/public/img/posts/') . $post->image);
         }
-        
-        
+
+
         $post->categories()->sync([]);
         $post->delete();
         return response([

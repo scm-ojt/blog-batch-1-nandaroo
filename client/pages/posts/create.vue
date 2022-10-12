@@ -83,6 +83,9 @@
 
 <script>
 export default {
+  head: {
+    title: 'Post'
+  },
   data() {
     return {
       url: null,

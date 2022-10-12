@@ -4,11 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use GuzzleHttp\Psr7\Response;
 use App\Http\Requests\CategoryRequest;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Illuminate\Support\Facades\Response as FacadesResponse;
-use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class CategoryController extends Controller
 {
