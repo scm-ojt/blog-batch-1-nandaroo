@@ -11,7 +11,7 @@
       </div>
       <div class="col-md-7">
         <div class="card-body">
-          <span class="card-title fs-4 semibolder">{{ post.title }}</span>
+          <span class="card-title fs-4 semibolder text-capitalize">{{ post.title }}</span>
           <p>
             Date :
             <span class="pr-3 text-secondary">
@@ -40,7 +40,7 @@
           placeholder="Write comment here!"
           v-model="comment"
         />
-        <button class="input-group-text" @click="createComment()">Comment</button>
+        <button class="input-group-text bg-secondary" @click="createComment()">Comment</button>
       </div>
       <div>All Comments :</div>
       <div
@@ -123,7 +123,6 @@ export default {
         .then((res) => {
           this.comments.unshift(res.data);
           this.comment = "";
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);

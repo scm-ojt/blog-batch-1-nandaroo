@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Exports\CategoryExport;
+use App\Imports\CategoryImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\ImportRequest;
 
 class CategoryController extends Controller
 {
@@ -15,11 +19,11 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Category::select('id','name'); 
-        if($request->search){
-            $query->where('name','like','%'.$request->search.'%');
+        $query = Category::select('id', 'name');
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
-        $categories=$query->get();
+        $categories = $query->get();
         return response()->json($categories);
     }
 
@@ -31,7 +35,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $category=Category::create([
+        $category = Category::create([
             'name' => $request->name
         ]);
 
@@ -49,9 +53,9 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category= Category::find($id);
+        $category = Category::find($id);
         return response([
-            "message" =>"success",
+            "message" => "success",
             "data" => $category
         ]);
     }
@@ -65,11 +69,11 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, $id)
     {
-        $category=Category::find($id);
-        $category->name=$request->name;
+        $category = Category::find($id);
+        $category->name = $request->name;
         $category->save();
         return response([
-            "message" =>"success",
+            "message" => "success",
             "data" => $category
         ]);
     }
@@ -85,8 +89,20 @@ class CategoryController extends Controller
         $category = Category::find($id);
         $category->delete($id);
         return response([
-            "message" =>"Deleted Successfully!",
+            "message" => "Deleted Successfully!",
             "data" => $category
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new CategoryExport($request->keyword), 'categories.xlsx');
+    }
+
+    public function import(ImportRequest $request)
+    {
+        Excel::import(new CategoryImport, request()->file('file'));
+
+        return response(200);
     }
 }

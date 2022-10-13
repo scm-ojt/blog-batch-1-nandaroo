@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,6 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
-
+Route::post('/categories/export', [CategoryController::class, 'export'])->middleware('auth:sanctum');
 
 require __DIR__ . '/auth.php';
