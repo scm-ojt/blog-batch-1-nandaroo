@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Exports\PostExport;
+use App\Imports\PostImport;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
+use App\Http\Requests\ImportRequest;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PostUpdateRequest;
 
 class PostController extends Controller
@@ -132,5 +136,16 @@ class PostController extends Controller
         return response([
             'message' => 'Post deleted!'
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new PostExport($request->keyword), 'posts.xlsx');
+    }
+
+    public function import(ImportRequest $request)
+    {
+        Excel::import(new PostImport, request()->file('file'));
+        return response(200);
     }
 }

@@ -38,4 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/categories/export', [CategoryController::class, 'export']);
     Route::post('/categories/import', [CategoryController::class, 'import']);
+
+    Route::post('/posts/export', [PostController::class, 'export']);
+    Route::post('/posts/import', [PostController::class, 'import']);
 });

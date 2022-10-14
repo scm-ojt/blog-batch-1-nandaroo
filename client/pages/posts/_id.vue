@@ -40,7 +40,7 @@
           placeholder="Write comment here!"
           v-model="comment"
         />
-        <button class="input-group-text bg-secondary" @click="createComment()">Comment</button>
+        <button class="input-group-text" @click="createComment()" :disabled="comment == '' || comment== null">Comment</button>
       </div>
       <div>All Comments :</div>
       <div

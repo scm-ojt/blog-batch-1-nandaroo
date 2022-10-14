@@ -33,14 +33,15 @@
                   class="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  id="modal-close"                  
+                  id="modal-close"
                   @click="clearErrMsg()"
                 ></button>
               </div>
-              <div class="modal-body" >
+              <div class="modal-body">
                 <div
                   class="alert alert-sm alert-warning alert-dismissible fade show"
-                  role="alert" v-if="fileErr"
+                  role="alert"
+                  v-if="fileErr"
                 >
                   Something went wrong!
                   <button
@@ -54,7 +55,9 @@
                   <div class="mb-3">
                     <label for="file" class="col-form-label">Choose excel file:</label>
                     <input class="form-control" type="file" name="file" id="file" />
-                    <small class="text-danger" v-if="fileErrMsg != ''">*{{ fileErrMsg }}</small>
+                    <small class="text-danger" v-if="fileErrMsg != ''"
+                      >*{{ fileErrMsg }}</small
+                    >
                   </div>
                 </form>
               </div>
@@ -176,7 +179,7 @@ export default {
       keyword: "",
       file: null,
       fileErr: false,
-      fileErrMsg:'',
+      fileErrMsg: "",
     };
   },
   async fetch() {
@@ -271,8 +274,8 @@ export default {
         });
     },
     importExcel() {
-      this.fileErr=false;
-      this.fileErrMsg='';
+      this.fileErr = false;
+      this.fileErrMsg = "";
       let form = document.getElementById("import-form");
       let formData = new FormData(form);
       this.$axios
@@ -284,15 +287,17 @@ export default {
         })
         .catch((err) => {
           this.fileErr = true;
-          if(err.response.status == 422 ){
-            this.fileErrMsg=err.response.data.errors.file[0];
+          if (err.response.status == 422) {
+            this.fileErrMsg = err.response.data.errors.file[0];
           }
         });
     },
     clearErrMsg() {
-      this.fileErrMsg='';
-      this.fileErr=false;
-    }
+      this.fileErrMsg = "";
+      this.fileErr = false;
+      let form = document.getElementById("import-form");
+      form.reset();
+    },
   },
 };
 </script>

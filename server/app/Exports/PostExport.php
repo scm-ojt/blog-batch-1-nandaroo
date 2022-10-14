@@ -2,25 +2,26 @@
 
 namespace App\Exports;
 
-use App\Models\Category;
+use App\Models\Post;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize
+class PostExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     use Exportable;
 
-
-    public function __construct($keyword)
-    {
+    public function __construct($keyword){
         $this->keyword = $keyword;
     }
 
+    /**
+    * @return \Illuminate\Support\Collection
+    */
     public function collection()
     {
-        return Category::where('name','like', '%'. $this->keyword .'%')->get();
+        return Post::where('title','like', '%'. $this->keyword .'%')->get();
     }
 
     /**
@@ -30,6 +31,6 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize
      */
     public function headings(): array
     {
-        return ["ID", "Name", "Created At", "Updated At"];
+        return ["id", "user_id", "image", "title", "body", "created_at", "updated_at"];
     }
 }
