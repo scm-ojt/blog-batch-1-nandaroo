@@ -1,79 +1,93 @@
 <template>
-  <div class="post col-8 px-3 mx-auto">
-    <div class="card shadow-lg">
-      <div class="card-header">
-        <h4 class="fw-bolder text-center text-uppercase">Post Create</h4>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-3 text-center">
-            <img v-if="url" :src="url" class="rounded img-fluid" alt="default image" />
-            <img
-              v-if="!url"
-              src="../../assets/img/default-img.jpg"
-              class="rounded img-fluid"
-              alt="user selected image"
-            />
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-10">
+        <div class="card shadow-lg d-block">
+          <div class="card-header">
+            <h4 class="fw-bolder text-center text-uppercase">Post Create</h4>
           </div>
-          <div class="col-9">
-            <form @submit.prevent="createPost()" id="form">
-              <div class="mb-3">
-                <label for="formFile" class="form-label fw-semibold">Choose Image</label>
-                <input
-                  class="form-control"
-                  type="file"
-                  name="image"
-                  id="image"
-                  @change="imageChangeHandler"
+          <div class="card-body">
+            <div class="row h-auto d-inline-block my-3">
+              <div class="post-create" id="img-frame">
+                <img
+                  src="../../assets/img/default-img.jpg"
+                  class="rounded img-fluid default-post-img"
+                  alt="user selected image"
                 />
-                <small class="text-danger" v-if="errors.image != null">*{{ errors.image[0] }}</small>
               </div>
+            </div>
 
-              <div class="form-group mb-3">
-                <label for="name" class="fw-semibold">Select Category</label>
-                <select
-                  class="form-select"
-                  multiple
-                  name="categories[]"
-                  aria-label="multiple select example"
-                >
-                  <option :value="item.id" v-for="item in categories" :key="item.id">
-                    {{ item.name }}
-                  </option>
-                </select>
-                <small class="text-danger" v-if="errors.categories != null">*{{ errors.categories[0] }}</small>
-              </div>
-              <div class="form-group mb-3">
-                <label for="title" class="fw-semibold">Title</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="title"
-                  name="title"
-                  placeholder="Write post title!"
-                />
-                 <small class="text-danger" v-if="errors.title != null">*{{ errors.title[0] }}</small>
-              </div>
-              <div class="form-group mb-3">
-                <label for="body" class="fw-semibold">Body</label>
-                <textarea
-                  class="form-control"
-                  id="body"
-                  name="body"
-                  rows="5"
-                  placeholder="Write details here!"
-                ></textarea>
-                <small class="text-danger" v-if="errors.body != null">*{{ errors.body[0] }}</small>
-              </div>
-              <div class="text-center">
-                <button class="btn btn-secondary mr-3" type="reset">
-                  <i class="fa-solid fa-trash-arrow-up"></i>Clear
-                </button>
-                <button class="btn btn-primary" type="submit">
-                  <i class="fa-regular fa-floppy-disk"></i> Save
-                </button>
-              </div>
-            </form>
+            <div class="row">
+              <form @submit.prevent="createPost()" id="form">
+                <div class="mb-3">
+                  <label for="formFile" class="form-label fw-semibold"
+                    >Choose Image</label
+                  >
+                  <input
+                    class="form-control"
+                    type="file"
+                    name="image[]"
+                    id="image"
+                    multiple="multiple"
+                    @change="imageChangeHandler"
+                  />
+                  <small class="text-danger" v-if="errors.image != null"
+                    >*{{ errors.image[0] }}</small
+                  >
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="name" class="fw-semibold">Select Category</label>
+                  <select
+                    class="form-select"
+                    multiple
+                    name="categories[]"
+                    aria-label="multiple select example"
+                  >
+                    <option :value="item.id" v-for="item in categories" :key="item.id">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                  <small class="text-danger" v-if="errors.categories != null"
+                    >*{{ errors.categories[0] }}</small
+                  >
+                </div>
+                <div class="form-group mb-3">
+                  <label for="title" class="fw-semibold">Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="title"
+                    name="title"
+                    placeholder="Write post title!"
+                  />
+                  <small class="text-danger" v-if="errors.title != null"
+                    >*{{ errors.title[0] }}</small
+                  >
+                </div>
+                <div class="form-group mb-3">
+                  <label for="body" class="fw-semibold">Body</label>
+                  <textarea
+                    class="form-control"
+                    id="body"
+                    name="body"
+                    rows="5"
+                    placeholder="Write details here!"
+                  ></textarea>
+                  <small class="text-danger" v-if="errors.body != null"
+                    >*{{ errors.body[0] }}</small
+                  >
+                </div>
+                <div class="text-center">
+                  <button class="btn btn-secondary mr-3" type="reset">
+                    <i class="fa-solid fa-trash-arrow-up"></i>Clear
+                  </button>
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fa-regular fa-floppy-disk"></i> Save
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -96,13 +110,12 @@ const Toast = Swal.mixin({
 });
 export default {
   head: {
-    title: 'Post'
+    title: "Post",
   },
   data() {
     return {
-      url: null,
       categories: [],
-      errors:{},
+      errors: {},
     };
   },
   async fetch() {
@@ -120,11 +133,16 @@ export default {
         });
     },
     imageChangeHandler(e) {
-      const file = e.target.files[0];
-      if (!file.type.includes("image")) {
-        this.url = null;
-      } else {
-        this.url = URL.createObjectURL(file);
+      let imgFrame = document.getElementById("img-frame");
+      imgFrame.innerHTML = "";
+      for (var i = 0; i < e.target.files.length; i++) {
+        let file = e.target.files[i];
+        if (file.type.includes("image")) {
+          let img = document.createElement("img");
+          img.classList.add("rounded", "img-fluid"); //rounded img-fluid
+          img.setAttribute("src", URL.createObjectURL(file));
+          imgFrame.appendChild(img);
+        }
       }
     },
     async createPost() {
@@ -141,11 +159,11 @@ export default {
             title: "Created Successfully!",
           });
           this.$router.push({
-            path: '/posts'
-          })
+            path: "/posts",
+          });
         })
         .catch((err) => {
-          this.errors=err.response.data.errors;
+          this.errors = err.response.data.errors;
         });
     },
   },
@@ -153,11 +171,16 @@ export default {
 </script>
 
 <style>
-.post img {
-  max-height: 150px;
-  width: auto;
-  min-width: 150px;
+.post-create img {
+  width: 25%;
+  height: 150px;
 }
+
+.post-create .default-post-img {
+  width: 200px;
+  height: 150px;
+}
+
 .form-select option {
   padding: 3px 0;
 }

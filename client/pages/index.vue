@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center fs-1">
+  <div class="container text-center fs-1">
     Welcome
   </div>
 </template>

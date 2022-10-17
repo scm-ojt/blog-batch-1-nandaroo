@@ -38,9 +38,10 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostRequest $request)
+    public function store(Request $request)
     {
-        $imageName = time() . '.' . $request->image->extension();
+        info($request->all());
+        /* $imageName = time() . '.' . $request->image->extension();
 
         // Storage Folder
         $request->image->move(storage_path('app/public/img/posts'), $imageName);
@@ -54,7 +55,7 @@ class PostController extends Controller
         return response([
             'message' => 'success',
             'data' => $post
-        ]);
+        ]); */
     }
 
     /**

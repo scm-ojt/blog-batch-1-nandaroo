@@ -1,5 +1,6 @@
 <template>
-  <form class="col-3 m-auto" @submit.prevent="register()">
+ <div class="container min-vh-100">
+  <form class="col-4 m-auto" @submit.prevent="register()">
     <div class="text-center">
     <img class="mb-3" src="/favicon.ico" alt="" width="80" height="70" />
     </div>
@@ -50,6 +51,7 @@
     </div>
     <button class="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
   </form>
+ </div>
 </template>
 
 <script>
