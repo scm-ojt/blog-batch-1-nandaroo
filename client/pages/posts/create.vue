@@ -82,6 +82,18 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-right",
+  customClass: {
+    popup: "colored-toast",
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+});
 export default {
   head: {
     title: 'Post'
@@ -124,6 +136,10 @@ export default {
           },
         })
         .then((res) => {
+          Toast.fire({
+            icon: "success",
+            title: "Created Successfully!",
+          });
           this.$router.push({
             path: '/posts'
           })

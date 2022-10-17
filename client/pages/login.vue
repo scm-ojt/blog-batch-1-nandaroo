@@ -67,19 +67,8 @@ export default {
       this.errors = {};
       this.$nuxt.$loading.start();
       try {
-      /* this.$axios
-        .post("http://127.0.0.1:8000/api/login", this.user)
-        .then((res) => {
-          console.log(res);
-          this.$router.push({
-            path: "/posts",
-          });
-        })
-        .catch((err) => {
-          this.errors = err.response.data.errors;
-        }); */
-      await this.$auth.loginWith("local", { data: this.user });
-      await this.$router.push({
+        await this.$auth.loginWith("local", { data: this.user });
+        await this.$router.push({
           path: "/posts",
         });
       } catch (err) {

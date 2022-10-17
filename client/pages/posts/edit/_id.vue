@@ -99,9 +99,21 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-right",
+  customClass: {
+    popup: "colored-toast",
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+});
 export default {
   head: {
-    title: 'Post'
+    title: "Post",
   },
   data() {
     return {
@@ -154,12 +166,15 @@ export default {
       await this.$axios
         .$post(`http://127.0.0.1:8000/api/posts/edit/${this.post.id}`, form)
         .then((res) => {
+          Toast.fire({
+            icon: "success",
+            title: "Updated Successfully!",
+          });
           this.$router.push({
             path: "/posts",
           });
         })
         .catch((err) => {
-          
           if (err.response.status == 403) {
             this.$router.push({
               path: "/posts",

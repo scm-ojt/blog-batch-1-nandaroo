@@ -158,6 +158,18 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-right",
+  customClass: {
+    popup: "colored-toast",
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+});
 export default {
   head: {
     title: "Post",
@@ -209,6 +221,10 @@ export default {
             this.posts = this.posts.filter((item) => {
               return item.id !== id;
             });
+            Toast.fire({
+              icon: "warning",
+              title: "Deleted Successfully!",
+            });
           })
           .catch((err) => {
             if (err.response.status == 403) {
@@ -250,6 +266,10 @@ export default {
           this.getAllPosts();
           this.fileErr = false;
           this.fileErrMsg = "";
+          Toast.fire({
+            icon: "success",
+            title: "Imported Successfully!",
+          });
         })
         .catch((err) => {
           this.fileErr = true;

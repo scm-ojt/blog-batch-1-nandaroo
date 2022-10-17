@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Comment;
 use App\Exports\PostExport;
 use App\Imports\PostImport;
 use Illuminate\Http\Request;
@@ -130,8 +131,8 @@ class PostController extends Controller
             File::delete(storage_path('app/public/img/posts/') . $post->image);
         }
 
-
         $post->categories()->sync([]);
+        Comment::where('post_id', $post->id)->delete();
         $post->delete();
         return response([
             'message' => 'Post deleted!'

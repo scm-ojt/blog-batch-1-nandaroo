@@ -1,11 +1,12 @@
 <?php
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,9 @@ use App\Http\Controllers\CommentController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('/categories/example', function() {
+    return Category::whereIn('name', ['Seafood', 'Sugar'])->pluck('id');
+});
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -42,3 +45,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/posts/export', [PostController::class, 'export']);
     Route::post('/posts/import', [PostController::class, 'import']);
 });
+
+
+

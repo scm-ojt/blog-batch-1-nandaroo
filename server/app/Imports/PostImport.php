@@ -3,25 +3,28 @@
 namespace App\Imports;
 
 use App\Models\Post;
+use App\Models\Category;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class PostImport implements ToModel, WithHeadingRow
-{   
+{
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function model(array $row)
     {
-        $post= Post::create([
-            'user_id'=> $row['user_id'],
+        $post = Post::create([
+            'user_id' => $row['user_id'],
             'image' => $row['image'],
             'title' => $row['title'],
             'body' => $row['body']
         ]);
-        $post->categories()->sync(explode(",",$row['categories']));
+        $categories_arr = explode(",", $row['categories']);
+        $id_arr = Category::whereIn('name', $categories_arr)->pluck('id');
+        $post->categories()->sync($id_arr);
         return $post;
     }
 }

@@ -153,6 +153,18 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-right",
+  customClass: {
+    popup: "colored-toast",
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+});
 export default {
   head: {
     title: "Category",
@@ -210,6 +222,10 @@ export default {
           this.categories.push(res.data);
           this.category.name = "";
           this.nameErr = "";
+          Toast.fire({
+            icon: "success",
+            title: "Created Successfully!",
+          });
         })
         .catch((err) => {
           this.nameErr = err.response.data.errors.name[0];
@@ -232,6 +248,10 @@ export default {
           this.getAllCategories();
           this.category = {};
           this.nameErr = "";
+          Toast.fire({
+            icon: "success",
+            title: "Updated Successfully!",
+          });
         })
         .catch((err) => {
           this.nameErr = err.response.data.errors.name[0];
@@ -244,6 +264,10 @@ export default {
           .then((res) => {
             this.categories = this.categories.filter((category) => {
               return category.id !== item.id;
+            });
+            Toast.fire({
+              icon: "warning",
+              title: "Deleted Successfully!",
             });
           })
           .catch((err) => {
@@ -284,6 +308,10 @@ export default {
           document.getElementById("modal-close").click();
           form.reset();
           this.getAllCategories();
+          Toast.fire({
+            icon: "success",
+            title: "Imported Successfully!",
+          });
         })
         .catch((err) => {
           this.fileErr = true;
