@@ -7,7 +7,7 @@
             <h4 class="fw-bolder text-center text-uppercase">Post Create</h4>
           </div>
           <div class="card-body">
-            <div class="row h-auto d-inline-block my-3">
+            <div class="row h-auto my-3">
               <div class="post-create" id="img-frame">
                 <img
                   src="../../assets/img/default-img.jpg"
@@ -139,7 +139,7 @@ export default {
         let file = e.target.files[i];
         if (file.type.includes("image")) {
           let img = document.createElement("img");
-          img.classList.add("rounded", "img-fluid"); //rounded img-fluid
+          img.classList.add("rounded"); //rounded img-fluid
           img.setAttribute("src", URL.createObjectURL(file));
           imgFrame.appendChild(img);
         }
