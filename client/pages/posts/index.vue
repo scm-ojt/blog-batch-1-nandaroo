@@ -46,12 +46,6 @@
                   v-if="fileErr"
                 >
                   Something went wrong!
-                  <!-- <button
-                    type="button"
-                    class="btn-close btn-sm"
-                    data-bs-dismiss="alert"
-                    
-                  ></button> -->
                 </div>
                 <form id="import-form">
                   <div class="mb-3">
@@ -83,6 +77,7 @@
             class="form-control"
             v-model="keyword"
             placeholder="Search"
+            @keyup.enter="search()"
           />
           <button class="input-group-text bg-primary text-white" @click="search()">
             <i class="fa-sharp fa-solid fa-magnifying-glass"></i> Search
@@ -112,16 +107,10 @@
         <template #cell(user)="data">
           {{ data.item.user.name }}
         </template>
-        <template #cell(categories)="data">
-          <span v-for="(category, index) in data.item.categories" :key="category.id">
-            <span v-if="index != 0" class="pr-2">,</span>
-            {{ category.name }}</span
-          >
-        </template>
         <template #cell(actions)="data">
           <NuxtLink
             :to="`/posts/edit/${data.item.id}`"
-            v-if="$auth.user.id == data.item.user_id"
+            v-if="$auth.user.id == data.item.user.id"
           >
             <button class="btn btn-sm btn-success my-2">
               <i class="fa-regular fa-pen-to-square"></i> Edit
@@ -141,7 +130,9 @@
           </NuxtLink>
         </template>
       </b-table>
-      <p v-if="rows == 0" class="text-danger text-center">No post here!</p>
+      <p v-if="rows == 0 && keyword != ''" class="text-danger text-center">
+        No post here!
+      </p>
       <b-pagination
         v-model="currentPage"
         :total-rows="rows"
@@ -179,15 +170,17 @@ export default {
       posts: [],
       keyword: "",
       fields: [
-        { key: "image", label: "Image", thStyle: { width: "20%" } },
-        "User",
-        { key: "categories", label: "Categories", thStyle: { width: "15%" } },
+        { key: "id", label: "ID" },
+        { key: "image", label: "Image"},
+        { key: "user", label: "User", thStyle: { width: "10%" } },
+        { key: "categories", label: "Categories", thStyle: { width: "10%" } },
         {
           key: "title",
           label: "Title",
-          thStyle: { width: "30%" },
+          thStyle: { width: "20%" },
           tdClass: "semibolder",
         },
+        { key: "body", label: "Body" },
         { key: "actions", label: "Actions", thStyle: { width: "20%" } },
       ],
       sortBy: "id",
@@ -306,8 +299,10 @@ export default {
 }
 
 .post-img {
-  max-height: 150px;
-  min-width: 200px;
+  max-height: 140px;
+  height: 140px;
+  width: 180px;
+  min-width: 180px;
 }
 
 .semibolder {

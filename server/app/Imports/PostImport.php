@@ -22,7 +22,7 @@ class PostImport implements ToModel, WithHeadingRow
             'title' => $row['title'],
             'body' => $row['body']
         ]);
-        $categories_arr = explode(",", $row['categories']);
+        $categories_arr = explode(", ", $row['categories']);
         $id_arr = Category::whereIn('name', $categories_arr)->pluck('id');
         $post->categories()->sync($id_arr);
         return $post;

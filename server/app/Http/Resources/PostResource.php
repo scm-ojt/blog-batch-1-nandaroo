@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
@@ -17,8 +18,8 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'body' => $this->body,
-            'categories' => $this->categories,
+            'body' =>  Str::limit($this->body, 100),
+            'categories' => $this->categories->implode('name', ', '),
             'user'=>$this->user,
             'images'=> $this->images,
             'created_at' => $this->created_at,
