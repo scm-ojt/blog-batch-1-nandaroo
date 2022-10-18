@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,8 +26,8 @@ class PostUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => [ 'nullable', File::image()->max(2048)],
-            'title' => ['required', 'max:255'],
+            'image' => ['nullable', File::image()->max(2048)],
+            'title' => ['required', Rule::unique('posts', 'title')->ignore((int) $this->segment(4)), 'max:255'],
             'body' => ['required'],
             'categories' => ['required', 'array'],
         ];
