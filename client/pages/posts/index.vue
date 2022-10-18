@@ -104,7 +104,7 @@
       >
         <template #cell(image)="data">
           <img
-            :src="`http://localhost:8000/storage/img/posts/${data.item.image}`"
+            :src="`http://localhost:8000/storage/img/posts/${data.item.images[0].image}`"
             class="rounded img-fluid post-img"
             alt="data.item.id"
           />
@@ -208,6 +208,7 @@ export default {
         .$get("http://127.0.0.1:8000/api/posts?search=" + this.keyword)
         .then((res) => {
           this.posts = res;
+          console.log(res);
         })
         .catch((err) => {
           console.error(err);

@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content min-vh-100 bg-light">
     <Navbar />
     <main class="p-5 bg-light"><Nuxt /></main>
   </div>
@@ -16,9 +16,4 @@ export default {
 </script>
 
 <style>
-.content {
-  min-height: 100vh;
-  height: auto;
-  width:100%;
-}
 </style>

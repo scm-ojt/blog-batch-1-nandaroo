@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PostUpdateRequest;
+use App\Models\PostImage;
 
 class PostController extends Controller
 {
@@ -24,7 +25,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Post::with('user')->with('categories');
+        $query = Post::with('user')->with('categories')->with('images');
         if ($request->search) {
             $query->where('posts.title', 'like', '%' . request()->input('search') . '%');
         }
@@ -41,21 +42,26 @@ class PostController extends Controller
     public function store(Request $request)
     {
         info($request->all());
-        /* $imageName = time() . '.' . $request->image->extension();
-
-        // Storage Folder
-        $request->image->move(storage_path('app/public/img/posts'), $imageName);
         $post = Post::create([
             'user_id' => Auth::user()->id,
-            'image' => $imageName,
             'title' => $request->title,
             'body' => $request->body
         ]);
+        $imageName='';
+        foreach ($request->file('image') as $image) {
+            $imageName='img_'. $image->getClientOriginalName();
+            // Storage Folder
+            $image->move(storage_path('app/public/img/posts'), $imageName);
+            PostImage::create([
+                'post_id'=>$post->id,
+                'image'=>$imageName
+            ]);
+        }
         $post->categories()->sync($request->categories);
         return response([
             'message' => 'success',
             'data' => $post
-        ]); */
+        ]);
     }
 
     /**
