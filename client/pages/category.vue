@@ -81,6 +81,7 @@
             class="form-control"
             v-model="keyword"
             placeholder="Search"
+            @keyup.enter="search()"
           />
           <button class="input-group-text bg-primary text-white" @click="search()">
             <i class="fa-sharp fa-solid fa-magnifying-glass"></i> Search
@@ -135,7 +136,7 @@
             </button>
           </template>
         </b-table>
-        <p v-if="rows == 0" class="text-danger text-center">No category here!</p>
+        <p v-if="rows == 0 && keyword != ''" class="text-danger text-center">No category here!</p>
         <b-pagination
           v-model="currentPage"
           :total-rows="rows"
@@ -234,6 +235,7 @@ export default {
     createForm() {
       this.isEditMode = false;
       this.category = {};
+      this.nameErr = "";
     },
     editForm(item) {
       this.isEditMode = true;

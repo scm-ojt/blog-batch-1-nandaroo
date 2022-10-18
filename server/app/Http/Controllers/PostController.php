@@ -29,7 +29,7 @@ class PostController extends Controller
             $query->where('posts.title', 'like', '%' . request()->input('search') . '%');
         }
         $posts = $query->get();
-        return response()->json($posts);
+        return response()->json(PostResource::collection($posts));
     }
 
     /**
@@ -65,8 +65,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::find($id);
-        return response()->json(new PostResource($post));
+        $post = Post::with('user')->with('categories')->find($id);
+        return response()->json($post);
     }
 
     /**
@@ -89,7 +89,6 @@ class PostController extends Controller
         }
         if ($request->file('image')) {
             if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
-                //File::delete('storage/img/posts/' . $post->image);
                 File::delete(storage_path('app/public/img/posts/') . $post->image);
             }
             $imageName = time() . '.' . $request->file('image')->extension();
