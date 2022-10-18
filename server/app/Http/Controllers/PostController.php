@@ -72,7 +72,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with('user')->with('categories')->find($id);
+        $post = Post::with('user')->with('categories')->with('images')->find($id);
         return response()->json($post);
     }
 

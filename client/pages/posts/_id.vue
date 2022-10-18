@@ -1,15 +1,15 @@
 <template>
   <div class="card mb-3 mx-auto shadow-sm" style="max-width: 900px">
-    <div class="row g-0">
-      <div class="col-md-5">
+    <div class="row g-0 d-flex justify-content-center">
+      <div class="col-md-6 pl-5 my-4">
         <img
-          v-if="post.image"
-          :src="`http://localhost:8000/storage/img/posts/${post.image}`"
-          class="rounded img-fluid m-3 detail-img"
+          :src="`http://localhost:8000/storage/img/posts/${item.image}`"
+          class="rounded detail-img"
           alt="data.item.id"
+          v-for="(item,index) in post.images"  :key="index"
         />
       </div>
-      <div class="col-md-7">
+      <div class="col-md-6">
         <div class="card-body">
           <span class="card-title fs-4 semibolder text-capitalize">{{ post.title }}</span>
           <p>
@@ -150,7 +150,7 @@ export default {
 
 <style>
 .detail-img {
-  width: 100%;
-  height: 300px;
+  width: 50%;
+  height: 150px;
 }
 </style>
