@@ -41,15 +41,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        info($request->all());
+        
         $post = Post::create([
             'user_id' => Auth::user()->id,
             'title' => $request->title,
             'body' => $request->body
         ]);
-        $imageName='';
         foreach ($request->file('image') as $image) {
-            $imageName='img_'. $image->getClientOriginalName();
+            $imageName=time() .'_'. $image->getClientOriginalName();
             // Storage Folder
             $image->move(storage_path('app/public/img/posts'), $imageName);
             PostImage::create([
@@ -85,8 +84,8 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, $id)
     {
-        $post = Post::find($id);
-
+        $post = Post::with('images')->find($id);
+        info($post->images);
         //authorize user to update the post
         /* if (! Gate::allows('post-actions', $post)) {
             abort(403);
@@ -95,14 +94,21 @@ class PostController extends Controller
             abort(403);
         }
         if ($request->file('image')) {
-            if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
-                File::delete(storage_path('app/public/img/posts/') . $post->image);
+            foreach($post->images as $item){
+                if (File::exists(storage_path('app/public/img/posts/') . $item->image)) {
+                    File::delete(storage_path('app/public/img/posts/') . $item->image);
+                }
             }
-            $imageName = time() . '.' . $request->file('image')->extension();
-
-            // Storage Folder
-            $request->image->move(storage_path('app/public/img/posts'), $imageName);
-            $post->image = $imageName;
+            PostImage::where('post_id', $id)->delete();
+            foreach ($request->file('image') as $image) {
+                $imageName=time() .'_'. $image->getClientOriginalName();
+                // Storage Folder
+                $image->move(storage_path('app/public/img/posts'), $imageName);
+                PostImage::create([
+                    'post_id'=>$post->id,
+                    'image'=>$imageName
+                ]);
+            }           
         }
 
         $post->title = $request->title;
@@ -124,7 +130,7 @@ class PostController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $post = Post::find($id);
+        $post = Post::with('images')->find($id);
         /* if (! Gate::allows('post-actions', $post)) {
             abort(403);
         } */
@@ -133,8 +139,10 @@ class PostController extends Controller
         if ($request->user()->cannot('delete', $post)) {
             abort(403);
         }
-        if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
-            File::delete(storage_path('app/public/img/posts/') . $post->image);
+        foreach($post->images as $item){
+            if (File::exists(storage_path('app/public/img/posts/') . $item->image)) {
+                File::delete(storage_path('app/public/img/posts/') . $item->image);
+            }
         }
 
         $post->categories()->sync([]);

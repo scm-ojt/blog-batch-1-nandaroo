@@ -16,7 +16,6 @@
                 />
               </div>
             </div>
-
             <div class="row">
               <form @submit.prevent="createPost()" id="form">
                 <div class="mb-3">
@@ -31,7 +30,9 @@
                     multiple="multiple"
                     @change="imageChangeHandler"
                   />
-                  <small class="text-danger" v-if="errors.image != null"
+                  <small class="text-danger" v-if="errors['image.0'] != null"
+                    >*{{ errors['image.0'][0] }}</small
+                  ><small class="text-danger" v-if="errors.image != null"
                     >*{{ errors.image[0] }}</small
                   >
                 </div>

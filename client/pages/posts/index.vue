@@ -201,7 +201,6 @@ export default {
         .$get("http://127.0.0.1:8000/api/posts?search=" + this.keyword)
         .then((res) => {
           this.posts = res;
-          console.log(res);
         })
         .catch((err) => {
           console.error(err);

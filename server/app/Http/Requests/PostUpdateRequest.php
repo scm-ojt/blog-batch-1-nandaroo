@@ -26,10 +26,23 @@ class PostUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => ['nullable', File::image()->max(2048)],
+            'images' => ['nullable','array'],
+            'image.*'=>[File::image()->max(2048)],
             'title' => ['required', Rule::unique('posts', 'title')->ignore((int) $this->segment(4)), 'max:255'],
             'body' => ['required'],
             'categories' => ['required', 'array'],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'image.*.image' => 'The file type must only be jpg or jpeg or png!',
         ];
     }
 }

@@ -27,12 +27,15 @@
                   <input
                     class="form-control"
                     type="file"
-                    name="image"
+                    name="image[]"
                     id="image"
+                    multiple="multiple"
                     @change="imageChangeHandler"
                   />
-                  <small class="text-danger" v-if="errors.image != null"
-                    >*{{ errors.image[0] }}</small
+                  <small class="text-danger" v-if="errors['image.0'] != null"
+                    >*{{ errors['image.0'][0] }}</small
+                  ><small class="text-danger" v-if="errors.image != null"
+                    >*{{ errors.image }}</small
                   >
                 </div>
 
@@ -153,12 +156,16 @@ export default {
         });
     },
     imageChangeHandler(e) {
-      this.post.image = e.target.files[0];
-      let file = e.target.files[0];
-      if (!file.type.includes("image")) {
-        this.url = null;
-      } else {
-        this.url = URL.createObjectURL(file);
+      let imgFrame = document.getElementById("img-frame");
+      imgFrame.innerHTML = "";
+      for (var i = 0; i < e.target.files.length; i++) {
+        let file = e.target.files[i];
+        if (file.type.includes("image")) {
+          let img = document.createElement("img");
+          img.classList.add("rounded"); //rounded img-fluid
+          img.setAttribute("src", URL.createObjectURL(file));
+          imgFrame.appendChild(img);
+        }
       }
     },
     async editPost() {
@@ -175,6 +182,7 @@ export default {
           });
         })
         .catch((err) => {
+          console.log(err.response.data)
           if (err.response.status == 403) {
             this.$router.push({
               path: "/posts",
