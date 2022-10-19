@@ -171,7 +171,7 @@ export default {
     async editPost() {
       let form = new FormData(document.getElementById("form"));
       await this.$axios
-        .$post(`http://127.0.0.1:8000/api/posts/edit/${this.post.id}`, form)
+        .$post(`http://127.0.0.1:8000/api/posts/${this.post.id}`, form)
         .then((res) => {
           Toast.fire({
             icon: "success",

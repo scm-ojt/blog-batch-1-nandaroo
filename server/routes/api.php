@@ -33,7 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::resource('categories', CategoryController::class);
 
-    Route::post('posts/edit/{id}', [PostController::class, 'update']);
+    Route::post('posts/{id}', [PostController::class, 'update']);
     Route::resource('posts', PostController::class);
 
     Route::resource('comments', CommentController::class);
