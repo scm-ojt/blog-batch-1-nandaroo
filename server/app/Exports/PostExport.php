@@ -32,7 +32,7 @@ class PostExport implements FromCollection, WithHeadings, ShouldAutoSize, WithMa
      */
     public function headings(): array
     {
-        return ["id", "user_id", "image", "title", "body","categories", "created_at", "updated_at"];
+        return ["id", "user_id", "image", "title", "body","categories", "created_at", "updated_at","actions"];
     }
 
     

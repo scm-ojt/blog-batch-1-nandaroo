@@ -30,6 +30,6 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize
      */
     public function headings(): array
     {
-        return ["id", "name", "created_at", "updated_at"];
+        return ["id", "name", "created_at", "updated_at","actions"];
     }
 }

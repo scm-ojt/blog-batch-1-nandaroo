@@ -41,9 +41,9 @@
                 <div
                   class="alert alert-sm alert-warning alert-dismissible fade show"
                   role="alert"
-                  v-if="fileErr"
-                >
-                  Something went wrong!
+                  v-if="errors != null"
+                >               
+                  <small v-for="(error,index) in errors" :key="index" class="text-danger">*{{error[0]}}<br></small>
                   <button
                     type="button"
                     class="btn-close btn-sm"
@@ -55,9 +55,6 @@
                   <div class="mb-3">
                     <label for="file" class="col-form-label">Choose excel file:</label>
                     <input class="form-control" type="file" name="file" id="file" />
-                    <small class="text-danger" v-if="fileErrMsg != ''"
-                      >*{{ fileErrMsg }}</small
-                    >
                   </div>
                 </form>
               </div>
@@ -191,8 +188,7 @@ export default {
       isEditMode: false,
       keyword: "",
       file: null,
-      fileErr: false,
-      fileErrMsg: "",
+      errors:null
     };
   },
   async fetch() {
@@ -300,8 +296,7 @@ export default {
         });
     },
     importExcel() {
-      this.fileErr = false;
-      this.fileErrMsg = "";
+      this.errors=null;
       let form = document.getElementById("import-form");
       let formData = new FormData(form);
       this.$axios
@@ -316,15 +311,14 @@ export default {
           });
         })
         .catch((err) => {
-          this.fileErr = true;
           if (err.response.status == 422) {
-            this.fileErrMsg = err.response.data.errors.file[0];
+            this.errors=err.response.data.errors;
+            console.log(this.errors);
           }
         });
     },
     clearErrMsg() {
-      this.fileErrMsg = "";
-      this.fileErr = false;
+      this.errors = null;
       let form = document.getElementById("import-form");
       form.reset();
     },

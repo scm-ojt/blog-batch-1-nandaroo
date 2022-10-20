@@ -16,6 +16,13 @@ class PostImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
+        if($row['actions'] == 'create'){
+
+        } else if($row['actions'] == 'update'){
+
+        } else if($row['actions'] == 'delete'){
+            
+        }
         $post = Post::create([
             'user_id' => $row['user_id'],
             'image' => $row['image'],

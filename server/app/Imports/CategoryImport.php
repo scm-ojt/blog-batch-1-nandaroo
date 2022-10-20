@@ -3,20 +3,37 @@
 namespace App\Imports;
 
 use App\Models\Category;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class CategoryImport implements ToModel, WithHeadingRow
+class CategoryImport implements ToCollection, WithHeadingRow
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
-    public function model(array $row)
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function collection(Collection $rows)
     {
-        return new Category([
-            'name'     => $row['name']
-        ]);
+        Validator::make($rows->toArray(), [
+            '*.name' => 'required',
+            '*.actions' => 'required'
+        ])->validate();
+        foreach ($rows as $row) {
+            info($row);
+            if ($row['actions'] == 'create') {
+                Category::create([
+                    'name'     => $row['name']
+                ]);
+            } else if ($row['actions'] == 'update') {
+                $category = Category::find($row['id']);
+                $category->name = $row['name'];
+                $category->save();
+            } else if ($row['actions'] == 'delete') {
+                Category::where('id', $row['id'])->delete();
+            }
+        }
     }
 }
