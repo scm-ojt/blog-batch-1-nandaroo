@@ -26,7 +26,9 @@
                   id="image"
                   @change="imageChangeHandler"
                 />
-                <small class="text-danger" v-if="errors.image != null">*{{ errors.image[0] }}</small>
+                <small class="text-danger" v-if="errors.image != null"
+                  >*{{ errors.image[0] }}</small
+                >
               </div>
 
               <div class="form-group mb-3">
@@ -41,7 +43,9 @@
                     {{ item.name }}
                   </option>
                 </select>
-                <small class="text-danger" v-if="errors.categories != null">*{{ errors.categories[0] }}</small>
+                <small class="text-danger" v-if="errors.categories != null"
+                  >*{{ errors.categories[0] }}</small
+                >
               </div>
               <div class="form-group mb-3">
                 <label for="title" class="fw-semibold">Title</label>
@@ -52,7 +56,9 @@
                   name="title"
                   placeholder="Write post title!"
                 />
-                 <small class="text-danger" v-if="errors.title != null">*{{ errors.title[0] }}</small>
+                <small class="text-danger" v-if="errors.title != null"
+                  >*{{ errors.title[0] }}</small
+                >
               </div>
               <div class="form-group mb-3">
                 <label for="body" class="fw-semibold">Body</label>
@@ -63,7 +69,9 @@
                   rows="5"
                   placeholder="Write details here!"
                 ></textarea>
-                <small class="text-danger" v-if="errors.body != null">*{{ errors.body[0] }}</small>
+                <small class="text-danger" v-if="errors.body != null"
+                  >*{{ errors.body[0] }}</small
+                >
               </div>
               <div class="text-center">
                 <button class="btn btn-secondary mr-3" type="reset">
@@ -96,13 +104,13 @@ const Toast = Swal.mixin({
 });
 export default {
   head: {
-    title: 'Post'
+    title: "Post",
   },
   data() {
     return {
       url: null,
       categories: [],
-      errors:{},
+      errors: {},
     };
   },
   async fetch() {
@@ -141,11 +149,11 @@ export default {
             title: "Created Successfully!",
           });
           this.$router.push({
-            path: '/posts'
-          })
+            path: "/posts",
+          });
         })
         .catch((err) => {
-          this.errors=err.response.data.errors;
+          this.errors = err.response.data.errors;
         });
     },
   },

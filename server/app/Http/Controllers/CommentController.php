@@ -9,16 +9,6 @@ use Illuminate\Support\Facades\Auth;
 class CommentController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -26,16 +16,16 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $comment=Comment::create([
-            'user_id'=>Auth::user()->id,
-            'post_id'=>$request->post_id,
-            'body'=>$request->body
+        $comment = Comment::create([
+            'user_id' => Auth::user()->id,
+            'post_id' => $request->post_id,
+            'body' => $request->body
         ]);
 
         $comment = Comment::where('id', $comment->id)
-                            ->with("user")
-                            ->first();
-        
+            ->with("user")
+            ->first();
+
         return response([
             'message' => 'success',
             'data' => $comment
@@ -44,10 +34,10 @@ class CommentController extends Controller
 
     public function show($id)
     {
-        $comments= Comment::where('post_id', $id)
-                                ->with('user')
-                                ->orderBy('id','desc')
-                                ->get();
+        $comments = Comment::where('post_id', $id)
+            ->with('user')
+            ->orderBy('id', 'desc')
+            ->get();
         return response()->json($comments);
     }
 
@@ -59,7 +49,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        if(request()->user()->cannot('delete', $comment)){
+        if (request()->user()->cannot('delete', $comment)) {
             abort(403);
         }
         $comment->delete();

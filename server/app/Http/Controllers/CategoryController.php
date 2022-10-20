@@ -51,9 +51,8 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
-        $category = Category::find($id);
         return response([
             "message" => "success",
             "data" => $category
@@ -67,11 +66,11 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CategoryRequest $request, $id)
+    public function update(CategoryRequest $request, Category $category)
     {
-        $category = Category::find($id);
-        $category->name = $request->name;
-        $category->save();
+        $category->update([
+            'name' => $request->name
+        ]);
         return response([
             "message" => "success",
             "data" => $category
@@ -84,10 +83,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        $category = Category::find($id);
-        $category->delete($id);
+        $category->delete();
         return response([
             "message" => "Deleted Successfully!",
             "data" => $category

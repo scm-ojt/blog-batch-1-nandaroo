@@ -18,6 +18,4 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
-Route::post('/categories/export', [CategoryController::class, 'export'])->middleware('auth:sanctum');
-
 require __DIR__ . '/auth.php';

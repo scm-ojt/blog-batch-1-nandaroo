@@ -40,7 +40,13 @@
           placeholder="Write comment here!"
           v-model="comment"
         />
-        <button class="input-group-text" @click="createComment()" :disabled="comment == '' || comment== null">Comment</button>
+        <button
+          class="input-group-text"
+          @click="createComment()"
+          :disabled="comment == '' || comment == null"
+        >
+          Comment
+        </button>
       </div>
       <div>All Comments :</div>
       <div
@@ -51,9 +57,7 @@
       >
         <div v-for="comment in comments" :key="comment.id" class="d-flex flex-row my-2">
           <div>
-            <span class="badge bg-primary float-start mt-1">{{
-              comment.user.name
-            }}</span>
+            <span class="badge bg-primary float-start mt-1">{{ comment.user.name }}</span>
           </div>
           <div class="bg-light p-2 text-dark ml-1 d-flex justify-content-start rounded-2">
             <div class="pr-1">{{ comment.body }}</div>
@@ -68,7 +72,7 @@
         </div>
       </div>
       <span v-if="comments.length == 0" class="ml-2 text-secondary">
-       No comment yet!
+        No comment yet!
       </span>
     </div>
   </div>
@@ -77,7 +81,7 @@
 <script>
 export default {
   head: {
-    title: 'Post'
+    title: "Post",
   },
   data() {
     return {

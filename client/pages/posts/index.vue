@@ -44,8 +44,10 @@
                   class="alert alert-sm alert-warning alert-dismissible fade show"
                   role="alert"
                   v-if="errors != null"
-                >               
-                  <small v-for="(error,index) in errors" :key="index" class="text-danger">*{{error[0]}}<br></small>
+                >
+                  <small v-for="(error, index) in errors" :key="index" class="text-danger"
+                    >*{{ error[0] }}<br
+                  /></small>
                   <button
                     type="button"
                     class="btn-close btn-sm"
@@ -174,7 +176,7 @@ export default {
       keyword: "",
       fields: [
         { key: "id", label: "ID" },
-        { key: "image", label: "Image"},
+        { key: "image", label: "Image" },
         { key: "user", label: "User", thStyle: { width: "10%" } },
         { key: "categories", label: "Categories", thStyle: { width: "10%" } },
         {
@@ -191,7 +193,7 @@ export default {
       currentPage: 1,
       perPage: 5,
       file: null,
-      errors:null,
+      errors: null,
     };
   },
   mounted() {
@@ -259,23 +261,19 @@ export default {
           document.getElementById("modal-close").click();
           form.reset();
           this.getAllPosts();
-          this.fileErr = false;
-          this.fileErrMsg = "";
           Toast.fire({
             icon: "success",
             title: "Imported Successfully!",
           });
         })
         .catch((err) => {
-          //this.fileErr = true;
           if (err.response.status == 422) {
-            this.errors=err.response.data.errors;
-            //this.fileErrMsg = err.response.data.errors.file[0];
+            this.errors = err.response.data.errors;
           }
         });
     },
     clearErrMsg() {
-      this.errors=null;
+      this.errors = null;
       let form = document.getElementById("import-form");
       form.reset();
     },

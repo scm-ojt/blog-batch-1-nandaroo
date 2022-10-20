@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Auth\AuthenticationException;
@@ -21,7 +20,8 @@ class AuthController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function register(RegisterRequest $request){
+    public function register(RegisterRequest $request)
+    {
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -37,11 +37,12 @@ class AuthController extends Controller
      * @param  \App\Http\Requests\Auth\LoginRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(LoginRequest $request) {
-        if(!Auth::attempt($request->only('email', 'password'))){
+    public function login(LoginRequest $request)
+    {
+        if (!Auth::attempt($request->only('email', 'password'))) {
             throw new AuthenticationException("Email or password is not valid");
         }
-        $token =$request->user()->createToken('user-token');
+        $token = $request->user()->createToken('user-token');
 
         return response([
             'message' => 'successfully logged in',
@@ -55,10 +56,11 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->currentAccessToken()->delete();
         return [
-            'message'=>'Successfully Logged out'
+            'message' => 'Successfully Logged out'
         ];
     }
 }

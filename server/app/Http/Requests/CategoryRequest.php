@@ -26,15 +26,15 @@ class CategoryRequest extends FormRequest
     {
         if (request()->isMethod('put')) {
             return [
-                'name'=> [
+                'name' => [
                     'required',
                     Rule::unique('categories', 'name')->ignore(request()->input('id')),
                     'max:100'
-                 ]
+                ]
             ];
         }
         return [
-            'name'=>'required|unique:categories,name|max:100'
+            'name' => 'required|unique:categories,name|max:100'
         ];
     }
 }

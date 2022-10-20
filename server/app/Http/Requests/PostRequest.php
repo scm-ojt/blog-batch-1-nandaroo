@@ -26,7 +26,7 @@ class PostRequest extends FormRequest
     {
         return [
             'image' => ['required', File::image()->max(2048)],
-            'title' => ['required','unique:posts,title', 'max:255'],
+            'title' => ['required', 'unique:posts,title', 'max:255'],
             'body' => ['required'],
             'categories' => ['required', 'array'],
         ];

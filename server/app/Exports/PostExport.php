@@ -13,16 +13,17 @@ class PostExport implements FromCollection, WithHeadings, ShouldAutoSize, WithMa
 {
     use Exportable;
 
-    public function __construct($keyword){
+    public function __construct($keyword)
+    {
         $this->keyword = $keyword;
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
-        return Post::where('title','like', '%'. $this->keyword .'%')->with('categories')->get();
+        return Post::where('title', 'like', '%' . $this->keyword . '%')->with('categories')->get();
     }
 
     /**
@@ -32,13 +33,13 @@ class PostExport implements FromCollection, WithHeadings, ShouldAutoSize, WithMa
      */
     public function headings(): array
     {
-        return ["id", "user_id", "image", "title", "body","categories", "created_at", "updated_at","actions"];
+        return ["id", "user_id", "image", "title", "body", "categories", "created_at", "updated_at", "actions"];
     }
 
-    
+
     /**
-    * @var Invoice $invoice
-    */
+     * @var Invoice $invoice
+     */
     public function map($post): array
     {
         return [
@@ -49,7 +50,7 @@ class PostExport implements FromCollection, WithHeadings, ShouldAutoSize, WithMa
             $post->body,
             $post->categories()->implode('name', ', '),
             $post->created_at,
-            $post->updated_at            
+            $post->updated_at
         ];
     }
 }

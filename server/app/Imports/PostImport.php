@@ -32,13 +32,13 @@ class PostImport implements ToCollection, WithHeadingRow, WithValidation
                 $id_arr = Category::whereIn('name', $categories_arr)->pluck('id');
                 $post->categories()->sync($id_arr);
             } else if ($row['actions'] == 'update') {
-                $post = Post::where('id', $row['id'])
-                    ->update([
-                        'user_id' => $row['user_id'],
-                        'image' => $row['image'],
-                        'title' => $row['title'],
-                        'body' => $row['body']
-                    ]);
+                $post = Post::find($row['id']);
+                $post->update([
+                    'user_id' => $row['user_id'],
+                    'image' => $row['image'],
+                    'title' => $row['title'],
+                    'body' => $row['body']
+                ]);
                 $categories_arr = explode(", ", $row['categories']);
                 $id_arr = Category::whereIn('name', $categories_arr)->pluck('id');
                 $post->categories()->sync($id_arr);

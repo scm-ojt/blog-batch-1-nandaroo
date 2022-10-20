@@ -20,7 +20,7 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize
 
     public function collection()
     {
-        return Category::where('name','like', '%'. $this->keyword .'%')->get();
+        return Category::where('name', 'like', '%' . $this->keyword . '%')->get();
     }
 
     /**
@@ -30,6 +30,6 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize
      */
     public function headings(): array
     {
-        return ["id", "name", "created_at", "updated_at","actions"];
+        return ["id", "name", "created_at", "updated_at", "actions"];
     }
 }

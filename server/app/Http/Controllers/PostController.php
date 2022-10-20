@@ -76,14 +76,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostUpdateRequest $request, $id)
+    public function update(PostUpdateRequest $request, Post $post)
     {
-        $post = Post::find($id);
-
         //authorize user to update the post
-        /* if (! Gate::allows('post-actions', $post)) {
-            abort(403);
-        } */
         if ($request->user()->cannot('update', $post)) {
             abort(403);
         }
@@ -97,7 +92,6 @@ class PostController extends Controller
             $request->image->move(storage_path('app/public/img/posts'), $imageName);
             $post->image = $imageName;
         }
-
         $post->title = $request->title;
         $post->body = $request->body;
         $post->categories()->sync($request->categories);
@@ -115,13 +109,8 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, Post $post)
     {
-        $post = Post::find($id);
-        /* if (! Gate::allows('post-actions', $post)) {
-            abort(403);
-        } */
-
         //authorize user to delete the post
         if ($request->user()->cannot('delete', $post)) {
             abort(403);

@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Post;
 use App\Models\User;
-use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,10 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-            $this->call([
-                UserSeeder::class,
-                CategorySeeder::class,
-                PostSeeder::class,
-            ]);
+        User::factory()
+            ->count(2)
+            ->create();
+        $this->call([
+            TestSeeder::class,
+        ]);
     }
 }

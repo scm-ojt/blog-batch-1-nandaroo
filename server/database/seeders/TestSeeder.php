@@ -4,10 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class PostSeeder extends Seeder
+class TestSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +17,12 @@ class PostSeeder extends Seeder
      */
     public function run()
     {
-        /*  */
+        for ($x = 0; $x <= 5; $x++) {
+            Category::create([
+                'name' => Str::random(10),
+            ]);
+        }
+
         for ($x = 0; $x < 5; $x++) {
             $post = Post::create([
                 'user_id' => User::all()->random()->id,

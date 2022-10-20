@@ -42,8 +42,10 @@
                   class="alert alert-sm alert-warning alert-dismissible fade show"
                   role="alert"
                   v-if="errors != null"
-                >               
-                  <small v-for="(error,index) in errors" :key="index" class="text-danger">*{{error[0]}}<br></small>
+                >
+                  <small v-for="(error, index) in errors" :key="index" class="text-danger"
+                    >*{{ error[0] }}<br
+                  /></small>
                   <button
                     type="button"
                     class="btn-close btn-sm"
@@ -133,7 +135,9 @@
             </button>
           </template>
         </b-table>
-        <p v-if="rows == 0 && keyword != ''" class="text-danger text-center">No category here!</p>
+        <p v-if="rows == 0 && keyword != ''" class="text-danger text-center">
+          No category here!
+        </p>
         <b-pagination
           v-model="currentPage"
           :total-rows="rows"
@@ -188,7 +192,7 @@ export default {
       isEditMode: false,
       keyword: "",
       file: null,
-      errors:null
+      errors: null,
     };
   },
   async fetch() {
@@ -296,7 +300,7 @@ export default {
         });
     },
     importExcel() {
-      this.errors=null;
+      this.errors = null;
       let form = document.getElementById("import-form");
       let formData = new FormData(form);
       this.$axios
@@ -312,7 +316,7 @@ export default {
         })
         .catch((err) => {
           if (err.response.status == 422) {
-            this.errors=err.response.data.errors;
+            this.errors = err.response.data.errors;
             console.log(this.errors);
           }
         });
