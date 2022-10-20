@@ -28,7 +28,7 @@ class PostUpdateRequest extends FormRequest
         return [
             'images' => ['nullable','array'],
             'image.*'=>[File::image()->max(2048)],
-            'title' => ['required', Rule::unique('posts', 'title')->ignore((int) $this->segment(4)), 'max:255'],
+            'title' => ['required', Rule::unique('posts', 'title')->ignore((int) $this->segment(3)), 'max:255'],
             'body' => ['required'],
             'categories' => ['required', 'array'],
         ];

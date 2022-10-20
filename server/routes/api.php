@@ -30,6 +30,11 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/categories/export', [CategoryController::class, 'export']);
+    Route::post('/categories/import', [CategoryController::class, 'import']);
+
+    Route::post('/posts/export', [PostController::class, 'export']);
+    Route::post('/posts/import', [PostController::class, 'import']);
 
     Route::resource('categories', CategoryController::class);
 
@@ -38,9 +43,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::resource('comments', CommentController::class);
 
-    Route::post('/categories/export', [CategoryController::class, 'export']);
-    Route::post('/categories/import', [CategoryController::class, 'import']);
-
-    Route::post('/posts/export', [PostController::class, 'export']);
-    Route::post('/posts/import', [PostController::class, 'import']);
+    
 });
