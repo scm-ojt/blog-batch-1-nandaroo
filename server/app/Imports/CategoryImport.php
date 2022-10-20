@@ -4,11 +4,11 @@ namespace App\Imports;
 
 use App\Models\Category;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class CategoryImport implements ToCollection, WithHeadingRow
+class CategoryImport implements ToCollection, WithHeadingRow, WithValidation
 {
     /**
      * @param array $row
@@ -17,12 +17,7 @@ class CategoryImport implements ToCollection, WithHeadingRow
      */
     public function collection(Collection $rows)
     {
-        Validator::make($rows->toArray(), [
-            '*.name' => 'required',
-            '*.actions' => 'required'
-        ])->validate();
         foreach ($rows as $row) {
-            info($row);
             if ($row['actions'] == 'create') {
                 Category::create([
                     'name'     => $row['name']
@@ -35,5 +30,13 @@ class CategoryImport implements ToCollection, WithHeadingRow
                 Category::where('id', $row['id'])->delete();
             }
         }
+    }
+
+    public function rules(): array
+    {
+        return [
+            '*.name' => 'required',
+            '*.actions' => 'required'
+        ];
     }
 }

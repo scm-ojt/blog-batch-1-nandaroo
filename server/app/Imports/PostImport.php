@@ -3,35 +3,66 @@
 namespace App\Imports;
 
 use App\Models\Post;
+use App\Models\Comment;
 use App\Models\Category;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class PostImport implements ToModel, WithHeadingRow
+class PostImport implements ToCollection, WithHeadingRow, WithValidation
 {
     /**
      * @param array $row
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
-        if($row['actions'] == 'create'){
-
-        } else if($row['actions'] == 'update'){
-
-        } else if($row['actions'] == 'delete'){
-            
+        foreach ($rows as $row) {
+            if ($row['actions'] == 'create') {
+                $post = Post::create([
+                    'user_id' => $row['user_id'],
+                    'image' => $row['image'],
+                    'title' => $row['title'],
+                    'body' => $row['body']
+                ]);
+                $categories_arr = explode(", ", $row['categories']);
+                $id_arr = Category::whereIn('name', $categories_arr)->pluck('id');
+                $post->categories()->sync($id_arr);
+            } else if ($row['actions'] == 'update') {
+                $post = Post::where('id', $row['id'])
+                    ->update([
+                        'user_id' => $row['user_id'],
+                        'image' => $row['image'],
+                        'title' => $row['title'],
+                        'body' => $row['body']
+                    ]);
+                $categories_arr = explode(", ", $row['categories']);
+                $id_arr = Category::whereIn('name', $categories_arr)->pluck('id');
+                $post->categories()->sync($id_arr);
+            } else if ($row['actions'] == 'delete') {
+                $post = Post::find($row['id']);
+                if (File::exists(storage_path('app/public/img/posts/') . $post->image)) {
+                    File::delete(storage_path('app/public/img/posts/') . $post->image);
+                }
+                $post->categories()->sync([]);
+                Comment::where('post_id', $post->id)->delete();
+                $post->delete();
+            }
         }
-        $post = Post::create([
-            'user_id' => $row['user_id'],
-            'image' => $row['image'],
-            'title' => $row['title'],
-            'body' => $row['body']
-        ]);
-        $categories_arr = explode(", ", $row['categories']);
-        $id_arr = Category::whereIn('name', $categories_arr)->pluck('id');
-        $post->categories()->sync($id_arr);
-        return $post;
+    }
+
+    public function rules(): array
+    {
+        return  [
+            '*.user_id' => 'required',
+            '*.image' => 'required',
+            '*.title' => ['required', 'max:255'],
+            '*.body' => 'required',
+            '*.categories' => 'required',
+            '*.actions' => 'required'
+        ];
     }
 }

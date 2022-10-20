@@ -43,17 +43,20 @@
                 <div
                   class="alert alert-sm alert-warning alert-dismissible fade show"
                   role="alert"
-                  v-if="fileErr"
-                >
-                  Something went wrong!
+                  v-if="errors != null"
+                >               
+                  <small v-for="(error,index) in errors" :key="index" class="text-danger">*{{error[0]}}<br></small>
+                  <button
+                    type="button"
+                    class="btn-close btn-sm"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                  ></button>
                 </div>
                 <form id="import-form">
                   <div class="mb-3">
                     <label for="file" class="col-form-label">Choose excel file:</label>
                     <input class="form-control" type="file" name="file" id="file" />
-                    <small class="text-danger" v-if="fileErrMsg != ''"
-                      >*{{ fileErrMsg }}</small
-                    >
                   </div>
                 </form>
               </div>
@@ -188,8 +191,7 @@ export default {
       currentPage: 1,
       perPage: 5,
       file: null,
-      fileErr: false,
-      fileErrMsg: "",
+      errors:null,
     };
   },
   mounted() {
@@ -265,15 +267,15 @@ export default {
           });
         })
         .catch((err) => {
-          this.fileErr = true;
+          //this.fileErr = true;
           if (err.response.status == 422) {
-            this.fileErrMsg = err.response.data.errors.file[0];
+            this.errors=err.response.data.errors;
+            //this.fileErrMsg = err.response.data.errors.file[0];
           }
         });
     },
     clearErrMsg() {
-      this.fileErrMsg = "";
-      this.fileErr = false;
+      this.errors=null;
       let form = document.getElementById("import-form");
       form.reset();
     },
