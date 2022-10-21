@@ -198,8 +198,8 @@ export default {
     async editPost() {
       let imgFrame = document.getElementById("images");
       if (
-        this.deletedImages.length < this.post.images.length ||
-        imgFrame.files.length != 0
+        this.deletedImages.length < this.post.images.length &&
+        (imgFrame.files.length != 0 && this.deletedImages.length !=0)
       ) {
         let form = new FormData(document.getElementById("form"));
         form.append("deletedImages[]", this.deletedImages);
