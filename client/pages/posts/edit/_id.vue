@@ -196,30 +196,39 @@ export default {
       }
     },
     async editPost() {
-      let form = new FormData(document.getElementById("form"));
-      form.append("deletedImages[]", this.deletedImages);
-      await this.$axios
-        .$post(`http://127.0.0.1:8000/api/posts/${this.post.id}`, form)
-        .then((res) => {
-          Toast.fire({
-            icon: "success",
-            title: "Updated Successfully!",
-          });
-          this.$router.push({
-            path: "/posts",
-          });
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-          if (err.response.status == 403) {
+      let imgFrame = document.getElementById("images");
+      if (
+        this.deletedImages.length < this.post.images.length ||
+        imgFrame.files.length != 0
+      ) {
+        let form = new FormData(document.getElementById("form"));
+        form.append("deletedImages[]", this.deletedImages);
+        await this.$axios
+          .$post(`http://127.0.0.1:8000/api/posts/${this.post.id}`, form)
+          .then((res) => {
+            Toast.fire({
+              icon: "success",
+              title: "Updated Successfully!",
+            });
             this.$router.push({
               path: "/posts",
             });
-            alert("You are not authorized!");
-          } else {
-            this.errors = err.response.data.errors;
-          }
-        });
+          })
+          .catch((err) => {
+            console.log(err.response.data);
+            if (err.response.status == 403) {
+              this.$router.push({
+                path: "/posts",
+              });
+              alert("You are not authorized!");
+            } else {
+              this.errors = err.response.data.errors;
+            }
+          });
+      } else {
+        alert('Please choose image! (or) Can\'t delete all images!');
+      }
+
     },
     removeImage(event, image) {
       event.currentTarget.parentElement.remove();

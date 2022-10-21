@@ -156,7 +156,7 @@ export default {
           img.setAttribute("src", URL.createObjectURL(file));
         } else {
           img.setAttribute("src", "/_nuxt/assets/img/default-img.jpg");
-          img.className = "border border-danger";
+          img.className = "rounded border border-danger";
         }
         div.appendChild(img);
         imgFrame.appendChild(div);
