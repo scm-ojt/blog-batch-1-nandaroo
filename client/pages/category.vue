@@ -136,7 +136,9 @@
             </button>
           </template>
         </b-table>
-        <p v-if="rows == 0 && keyword != ''" class="text-danger text-center">No category here!</p>
+        <p v-if="rows == 0 && keyword != ''" class="text-danger text-center">
+          No category here!
+        </p>
         <b-pagination
           v-model="currentPage"
           :total-rows="rows"

@@ -41,19 +41,19 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        
+
         $post = Post::create([
             'user_id' => Auth::user()->id,
             'title' => $request->title,
             'body' => $request->body
         ]);
         foreach ($request->file('image') as $image) {
-            $imageName=time() .'_'. $image->getClientOriginalName();
+            $imageName = time() . '_' . $image->getClientOriginalName();
             // Storage Folder
             $image->move(storage_path('app/public/img/posts'), $imageName);
             PostImage::create([
-                'post_id'=>$post->id,
-                'image'=>$imageName
+                'post_id' => $post->id,
+                'image' => $imageName
             ]);
         }
         $post->categories()->sync($request->categories);
@@ -94,21 +94,29 @@ class PostController extends Controller
             abort(403);
         }
         if ($request->file('image')) {
-            foreach($post->images as $item){
+            foreach ($post->images as $item) {
                 if (File::exists(storage_path('app/public/img/posts/') . $item->image)) {
                     File::delete(storage_path('app/public/img/posts/') . $item->image);
                 }
             }
             PostImage::where('post_id', $id)->delete();
             foreach ($request->file('image') as $image) {
-                $imageName=time() .'_'. $image->getClientOriginalName();
+                $imageName = time() . '_' . $image->getClientOriginalName();
                 // Storage Folder
                 $image->move(storage_path('app/public/img/posts'), $imageName);
                 PostImage::create([
-                    'post_id'=>$post->id,
-                    'image'=>$imageName
+                    'post_id' => $post->id,
+                    'image' => $imageName
                 ]);
-            }           
+            }
+        } else if ($request->deletedImages) {
+            foreach ($request->deletedImages as $image) {
+                if (File::exists(storage_path('app/public/img/posts/') . $image)) {
+                    File::delete(storage_path('app/public/img/posts/') . $image);
+                }
+            }
+            PostImage::whereIn('image', $request->deletedImages)
+                ->where('post_id', $id)->delete();
         }
 
         $post->title = $request->title;
@@ -139,7 +147,7 @@ class PostController extends Controller
         if ($request->user()->cannot('delete', $post)) {
             abort(403);
         }
-        foreach($post->images as $item){
+        foreach ($post->images as $item) {
             if (File::exists(storage_path('app/public/img/posts/') . $item->image)) {
                 File::delete(storage_path('app/public/img/posts/') . $item->image);
             }

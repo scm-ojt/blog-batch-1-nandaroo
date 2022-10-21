@@ -7,15 +7,26 @@
             <h4 class="fw-bolder text-center text-uppercase">Post Edit</h4>
           </div>
           <div class="card-body">
-            <div class="row h-auto my-3">
-              <div class="post-create" id="img-frame">
-                <img
-                  :src="`http://localhost:8000/storage/img/posts/${item.image}`"
-                  class="rounded detail-img"
-                  alt="data.item.id"
+            <div class="row h-auto">
+              <div class="mb-1" id="img-frame">
+                <div
+                  class="edit-img my-2 d-inline-block position-relative"
                   v-for="(item, index) in post.images"
                   :key="index"
-                />
+                >
+                  <span
+                    class="position-absolute top-0 start-100 translate-middle mt-1"
+                    @click="(event) => removeImage(event, item.image)"
+                    ><i
+                      class="fa-solid fa-circle-xmark text-secondary bg-white rounded-circle fs-5"
+                    ></i
+                  ></span>
+                  <img
+                    :src="`http://localhost:8000/storage/img/posts/${item.image}`"
+                    class="rounded"
+                    alt="data.item.id"
+                  />
+                </div>
               </div>
             </div>
             <div class="row">
@@ -28,12 +39,12 @@
                     class="form-control"
                     type="file"
                     name="image[]"
-                    id="image"
+                    id="images"
                     multiple="multiple"
                     @change="imageChangeHandler"
                   />
                   <small class="text-danger" v-if="errors['image.0'] != null"
-                    >*{{ errors['image.0'][0] }}</small
+                    >*{{ errors["image.0"][0] }}</small
                   ><small class="text-danger" v-if="errors.image != null"
                     >*{{ errors.image }}</small
                   >
@@ -125,6 +136,7 @@ export default {
       selectedCategories: [],
       errors: {},
       post: [],
+      deletedImages: [],
     };
   },
   async fetch() {
@@ -156,20 +168,36 @@ export default {
         });
     },
     imageChangeHandler(e) {
+      this.deletedImages = [];
       let imgFrame = document.getElementById("img-frame");
       imgFrame.innerHTML = "";
       for (var i = 0; i < e.target.files.length; i++) {
         let file = e.target.files[i];
+        let div = document.createElement("div");
+        let span = document.createElement("span");
+        span.className = "position-absolute top-0 start-100 translate-middle mt-1";
+        span.innerHTML = `<i
+                      class="fa-solid fa-circle-xmark text-secondary bg-white rounded-circle fs-5"
+                    ></i>`;
+        span.onclick = (event) => this.removeImage(event, file);
+
+        div.appendChild(span);
+        div.classList.add("edit-img", "position-relative", "d-inline-block");
+        let img = document.createElement("img");
+        img.classList.add("rounded");
         if (file.type.includes("image")) {
-          let img = document.createElement("img");
-          img.classList.add("rounded"); //rounded img-fluid
           img.setAttribute("src", URL.createObjectURL(file));
-          imgFrame.appendChild(img);
+        } else {
+          img.setAttribute("src", "/_nuxt/assets/img/default-img.jpg");
+          img.className = "border border-danger";
         }
+        div.appendChild(img);
+        imgFrame.appendChild(div);
       }
     },
     async editPost() {
       let form = new FormData(document.getElementById("form"));
+      form.append("deletedImages[]", this.deletedImages);
       await this.$axios
         .$post(`http://127.0.0.1:8000/api/posts/${this.post.id}`, form)
         .then((res) => {
@@ -182,7 +210,7 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err.response.data)
+          console.log(err.response.data);
           if (err.response.status == 403) {
             this.$router.push({
               path: "/posts",
@@ -193,8 +221,39 @@ export default {
           }
         });
     },
+    removeImage(event, image) {
+      event.currentTarget.parentElement.remove();
+      if (typeof image === "string") {
+        this.deletedImages.push(image);
+        console.log(this.deletedImages);
+      } else if (typeof image === "object") {
+        let imgFrame = document.getElementById("images");
+
+        let files = Array.from(imgFrame.files);
+
+        files = files.filter((file) => {
+          return file != image;
+        });
+
+        let fileBuffer = new DataTransfer();
+        for (let i = 0; i < files.length; i++) {
+          fileBuffer.items.add(files[i]);
+        }
+        imgFrame.files = fileBuffer.files;
+      }
+    },
   },
 };
 </script>
 
-<style></style>
+<style>
+.edit-img {
+  height: 150px;
+  width: 200px;
+  margin: 10px;
+}
+.edit-img img {
+  width: 100%;
+  height: 100%;
+}
+</style>

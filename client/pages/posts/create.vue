@@ -7,13 +7,15 @@
             <h4 class="fw-bolder text-center text-uppercase">Post Create</h4>
           </div>
           <div class="card-body">
-            <div class="row h-auto my-3">
-              <div class="post-create" id="img-frame">
-                <img
-                  src="../../assets/img/default-img.jpg"
-                  class="rounded img-fluid default-post-img"
-                  alt="user selected image"
-                />
+            <div class="row h-auto">
+              <div id="img-frame" class="mb-2">
+                <div class="edit-img">
+                  <img
+                    src="../../assets/img/default-img.jpg"
+                    class="rounded"
+                    alt="user selected image"
+                  />
+                </div>
               </div>
             </div>
             <div class="row">
@@ -26,12 +28,12 @@
                     class="form-control"
                     type="file"
                     name="image[]"
-                    id="image"
+                    id="images"
                     multiple="multiple"
                     @change="imageChangeHandler"
                   />
                   <small class="text-danger" v-if="errors['image.0'] != null"
-                    >*{{ errors['image.0'][0] }}</small
+                    >*{{ errors["image.0"][0] }}</small
                   ><small class="text-danger" v-if="errors.image != null"
                     >*{{ errors.image[0] }}</small
                   >
@@ -138,12 +140,26 @@ export default {
       imgFrame.innerHTML = "";
       for (var i = 0; i < e.target.files.length; i++) {
         let file = e.target.files[i];
+        let div = document.createElement("div");
+        let span = document.createElement("span");
+        span.className = "position-absolute top-0 start-100 translate-middle mt-1";
+        span.innerHTML = `<i
+                      class="fa-solid fa-circle-xmark text-secondary bg-white rounded-circle fs-5"
+                    ></i>`;
+        span.onclick = (event) => this.removeImage(event, file);
+
+        div.appendChild(span);
+        div.classList.add("edit-img", "position-relative", "d-inline-block");
+        let img = document.createElement("img");
+        img.classList.add("rounded");
         if (file.type.includes("image")) {
-          let img = document.createElement("img");
-          img.classList.add("rounded"); //rounded img-fluid
           img.setAttribute("src", URL.createObjectURL(file));
-          imgFrame.appendChild(img);
+        } else {
+          img.setAttribute("src", "/_nuxt/assets/img/default-img.jpg");
+          img.className = "border border-danger";
         }
+        div.appendChild(img);
+        imgFrame.appendChild(div);
       }
     },
     async createPost() {
@@ -167,21 +183,38 @@ export default {
           this.errors = err.response.data.errors;
         });
     },
+    removeImage(event, image) {
+      event.currentTarget.parentElement.remove();
+
+      let imgFrame = document.getElementById("images");
+
+      let files = Array.from(imgFrame.files);
+
+      files = files.filter((file) => {
+        return file != image;
+      });
+
+      let fileBuffer = new DataTransfer();
+      for (let i = 0; i < files.length; i++) {
+        fileBuffer.items.add(files[i]);
+      }
+      imgFrame.files = fileBuffer.files;
+    },
   },
 };
 </script>
 
 <style>
-.post-create img {
-  width: 25%;
+.edit-img {
   height: 150px;
-}
-
-.post-create .default-post-img {
   width: 200px;
-  height: 150px;
+  margin: 10px;
 }
-
+.edit-img img,
+.hello {
+  width: 100%;
+  height: 100%;
+}
 .form-select option {
   padding: 3px 0;
 }
