@@ -137,6 +137,7 @@ export default {
       errors: {},
       post: [],
       deletedImages: [],
+      deletedImagesCount: 0,
     };
   },
   async fetch() {
@@ -168,7 +169,7 @@ export default {
         });
     },
     imageChangeHandler(e) {
-      this.deletedImages = [];
+      this.deletedImagesCount = this.post.images.length;
       let imgFrame = document.getElementById("img-frame");
       imgFrame.innerHTML = "";
       for (var i = 0; i < e.target.files.length; i++) {
@@ -198,9 +199,11 @@ export default {
     async editPost() {
       let imgFrame = document.getElementById("images");
       if (
-        this.deletedImages.length < this.post.images.length &&
-        (imgFrame.files.length != 0 && this.deletedImages.length !=0)
+        this.deletedImagesCount == this.post.images.length ||
+        imgFrame.files.length == 0
       ) {
+        alert("Please choose image! (or) Can't delete all images!");
+      } else {
         let form = new FormData(document.getElementById("form"));
         form.append("deletedImages[]", this.deletedImages);
         await this.$axios
@@ -225,15 +228,13 @@ export default {
               this.errors = err.response.data.errors;
             }
           });
-      } else {
-        alert('Please choose image! (or) Can\'t delete all images!');
       }
-
     },
     removeImage(event, image) {
       event.currentTarget.parentElement.remove();
       if (typeof image === "string") {
         this.deletedImages.push(image);
+        this.deletedImagesCount += 1;
         console.log(this.deletedImages);
       } else if (typeof image === "object") {
         let imgFrame = document.getElementById("images");
